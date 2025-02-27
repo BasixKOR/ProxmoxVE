@@ -5,7 +5,6 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://beszel.dev/
 
-# App Default Values
 APP="Beszel"
 var_tags="monitoring"
 var_cpu="1"
@@ -15,11 +14,7 @@ var_os="debian"
 var_version="12"
 var_unprivileged="1"
 
-# App Output & Base Settings
 header_info "$APP"
-base_settings
-
-# Core
 variables
 color
 catch_errors
@@ -33,7 +28,7 @@ function update_script() {
         exit
     fi
     /opt/beszel/beszel update
-    msg_error "Ther is currently no automatic update function for ${APP}."
+    msg_error "Currently we don't provide an update function for this ${APP}."
     exit
 }
 

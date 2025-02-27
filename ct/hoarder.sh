@@ -5,21 +5,16 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://hoarder.app/
 
-# App Default Values
 APP="Hoarder"
 var_tags="bookmark"
 var_cpu="2"
 var_ram="4096"
-var_disk="8"
+var_disk="10"
 var_os="debian"
 var_version="12"
 var_unprivileged="1"
 
-# App Output & Base Settings
 header_info "$APP"
-base_settings
-
-# Core
 variables
 color
 catch_errors
@@ -39,6 +34,9 @@ function update_script() {
     systemctl stop hoarder-web hoarder-workers hoarder-browser
     msg_ok "Stopped Services"
     msg_info "Updating ${APP} to v${RELEASE}"
+    if [[ $(corepack -v) < "0.31.0" ]]; then
+      $STD npm install -g corepack@0.31.0
+    fi
     cd /opt
     if [[ -f /opt/hoarder/.env ]] && [[ ! -f /etc/hoarder/hoarder.env ]]; then
       mkdir -p /etc/hoarder
@@ -49,14 +47,14 @@ function update_script() {
     unzip -q v${RELEASE}.zip
     mv hoarder-${RELEASE} /opt/hoarder
     cd /opt/hoarder/apps/web
-    pnpm install --frozen-lockfile &>/dev/null
-    pnpm exec next build --experimental-build-mode compile &>/dev/null
+    $STD pnpm install --frozen-lockfile
+    $STD pnpm exec next build --experimental-build-mode compile
     cp -r /opt/hoarder/apps/web/.next/standalone/apps/web/server.js /opt/hoarder/apps/web
     cd /opt/hoarder/apps/workers
-    pnpm install --frozen-lockfile &>/dev/null
+    $STD pnpm install --frozen-lockfile
     export DATA_DIR=/opt/hoarder_data
     cd /opt/hoarder/packages/db
-    pnpm migrate &>/dev/null
+    $STD pnpm migrate
     sed -i "s/SERVER_VERSION=${PREV_RELEASE}/SERVER_VERSION=${RELEASE}/" /etc/hoarder/hoarder.env
     msg_ok "Updated ${APP} to v${RELEASE}"
 

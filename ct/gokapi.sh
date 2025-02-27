@@ -5,7 +5,6 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # License: MIT | https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
 # Source: https://github.com/Forceu/Gokapi
 
-# App Default Values
 APP="Gokapi"
 var_tags="file;sharing"
 var_cpu="1"
@@ -15,11 +14,7 @@ var_os="debian"
 var_version="12"
 var_unprivileged="1"
 
-# App Output & Base Settings
 header_info "$APP"
-base_settings
-
-# Core
 variables
 color
 catch_errors
@@ -32,7 +27,7 @@ function update_script() {
       msg_error "No ${APP} Installation Found!"
       exit
    fi
-   msg_error "There is currently no update path available."
+   msg_error "Currently we don't provide an update function for this ${APP}."
    exit
 }
 
